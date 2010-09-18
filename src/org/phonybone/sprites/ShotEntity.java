@@ -5,7 +5,7 @@ package org.phonybone.sprites;
  * 
  * @author Kevin Glass
  */
-public class ShotEntity extends Entity {
+public class ShotEntity extends SpriteEntity {
 	/** The vertical speed at which the players shot moves */
 	private double moveSpeed = -300;
 	/** The game in which this entity exists */

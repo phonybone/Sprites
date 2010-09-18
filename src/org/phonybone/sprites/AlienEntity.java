@@ -5,7 +5,7 @@ package org.phonybone.sprites;
  * 
  * @author Kevin Glass
  */
-public class AlienEntity extends Entity {
+public class AlienEntity extends SpriteEntity {
 	/** The speed at which the alient moves horizontally */
 	private double moveSpeed = 75;
 	/** The game in which the entity exists */

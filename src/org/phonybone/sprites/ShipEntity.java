@@ -5,7 +5,7 @@ package org.phonybone.sprites;
  * 
  * @author Kevin Glass
  */
-public class ShipEntity extends Entity {
+public class ShipEntity extends SpriteEntity {
 	/** The game in which the ship exists */
 	private Game game;
 	
@@ -19,7 +19,6 @@ public class ShipEntity extends Entity {
 	 */
 	public ShipEntity(Game game,String ref,int x,int y) {
 		super(ref,x,y);
-		
 		this.game = game;
 	}
 	
