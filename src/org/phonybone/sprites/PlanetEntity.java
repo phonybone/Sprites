@@ -7,6 +7,17 @@ import java.awt.Graphics;
 import java.awt.Color;
 import java.util.ArrayList;
 
+/*
+  Todo:
+  fix up keyboard UI
+  - allow start/stop
+  - allow keyboard quit
+  add more planets
+  add options to show traces
+  fix ArrayList warnings?
+  
+ */
+
 public class PlanetEntity extends Entity {
     private Game game;
     private String name;
@@ -27,14 +38,14 @@ public class PlanetEntity extends Entity {
     }
 
     public void draw(Graphics g) {
-	int radius=(int) Math.min(Math.max(Math.pow(this.mass,1.0/3.0),2.0),20.0);
+	int radius=(int) Math.min(Math.max(Math.pow(this.mass,1.0/3.0),4.0),20.0);
 	g.setColor(this.color);
 	g.fillArc((int)this.x, (int)this.y, radius, radius, 0, 360);
 
 	// draw the force vector:
 	if (this.name=="Earth") {
-	    g.setColor(Color.green);
-	    g.drawLine((int)this.x,(int)this.y, (int)(this.x+this.fx*20), (int)(this.y+this.fy*20));
+	    //	    g.setColor(Color.green);
+	    //	    g.drawLine((int)this.x,(int)this.y, (int)(this.x+this.fx*50), (int)(this.y+this.fy*50));
 	}
     }
 	
@@ -52,11 +63,20 @@ public class PlanetEntity extends Entity {
 	double ddy=this.y-p2.y;
 	return ((ddx*ddx)+(ddy*ddy));
     }
-	
+       
     public double angle2d(PlanetEntity p2){
-	double theta=java.lang.Math.atan((this.y-p2.y)/(this.x-p2.x));
-	if (theta<0) theta=Math.PI-theta;
-	return theta;
+	double x=(this.x-p2.x);
+	double y=(this.y-p2.y);
+	if (x==0) return y>0? Math.PI/2 : Math.PI*3/2;
+
+	double theta=Math.atan(y/x);
+
+	if (x>0) {
+	    if (y>0) return theta;	 // quad 1
+	    else return Math.PI*2+theta; // quad 4
+	} else {	       
+	    return  Math.PI+theta; // quads 2&3
+	}
     }
 	
     public String toString() {
@@ -92,8 +112,6 @@ public class PlanetEntity extends Entity {
 	this.dy+=ay;
 	this.x+=this.dx*delta/1000;
 	this.y+=this.dy*delta/1000;
-
-	if (this.name=="Earth") System.err.println(this.toString()+": ax="+Double.toString(ax)+", ay="+Double.toString(ay));
     }
 
     public boolean collidesWith(Entity other) {
@@ -106,8 +124,9 @@ public class PlanetEntity extends Entity {
 
     public static ArrayList init_planets(Game game) {
 	ArrayList planets=new ArrayList();
-	planets.add(new PlanetEntity(game,"Sun",400,300, 0,0, 10000, Color.yellow));
-	planets.add(new PlanetEntity(game,"Earth",500,300 ,0,15, 10, Color.blue));
+	planets.add(new PlanetEntity(game,"Sun",  400,300, 0, 0, 10000, Color.yellow));
+	planets.add(new PlanetEntity(game,"Earth",500,300 ,0,15,    10, Color.blue));
+	planets.add(new PlanetEntity(game,"Moon" ,500,304 ,0,15,     2, Color.gray));
 	return planets;
     }
 
