@@ -38,6 +38,7 @@ public class PlanetEntity extends Entity {
 	}
     }
 	
+    // return the gravitation force vector between two planets (as a double[2])
     public double[] gForce2d(PlanetEntity p2) {
 	double f=-G*this.mass*p2.mass/distance2d(p2);
 	double[] f2d= new double[2];
@@ -47,12 +48,14 @@ public class PlanetEntity extends Entity {
         return f2d;
     }
 	
+    // return the square of the distance between two planets
     public double distance2d(PlanetEntity p2) {
 	double ddx=this.x-p2.x;
 	double ddy=this.y-p2.y;
 	return ((ddx*ddx)+(ddy*ddy));
     }
 	
+    // return the angle (in radians) between the two planet's location:
     public double angle2d(PlanetEntity p2){
 	double theta=java.lang.Math.atan((this.y-p2.y)/(this.x-p2.x));
 	if (theta<0) theta=Math.PI-theta;
@@ -111,6 +114,14 @@ public class PlanetEntity extends Entity {
 	return planets;
     }
 
+    // Return the velocity vector that corresponds to a stable orbit (gravity cancels centripital force)
+    public double[] stable_orbit(PlantetEntity p2) {
+	double r=sqrt(this.distance2d(p2));
+	double vm=sqrt(G*p2.mass/r);
+	double theta=this.angle2d(p2);
+	double[2] v=[vm*cos(theta),vm*sin(theta)];
+	return v;
+    }
 
     public int getWidth() {
 	return 1;
