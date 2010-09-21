@@ -34,7 +34,8 @@ public class Game extends Canvas {
     /** The stragey that allows us to use accelerate page flipping */
     private BufferStrategy strategy;
     /** True if the game is currently "running", i.e. the game loop is looping */
-    private boolean gameRunning = true;
+    private boolean gameRunning = false;
+    private boolean gameOver = false;
     /** The list of all the entities that exist in our game */
     private ArrayList entities = new ArrayList();
     private ArrayList planets;
@@ -54,7 +55,7 @@ public class Game extends Canvas {
     /** The message to display which waiting for a key press */
     private String message = "";
     /** True if we're holding up game play until a key has been pressed */
-    private boolean waitingForKeyPress = true;
+    private boolean waitingForKeyPress=true;
     /** True if the left cursor key is currently pressed */
     private boolean leftPressed = false;
     /** True if the right cursor key is currently pressed */
@@ -162,7 +163,7 @@ public class Game extends Canvas {
      */
     public void notifyDeath() {
 	message = "Oh no! They got you, try again?";
-	waitingForKeyPress = true;
+	waitingForKeyPress=true;
     }
 	
     /**
@@ -171,7 +172,7 @@ public class Game extends Canvas {
      */
     public void notifyWin() {
 	message = "Well done! You Win!";
-	waitingForKeyPress = true;
+	waitingForKeyPress=true;
     }
 	
     /**
@@ -231,7 +232,7 @@ public class Game extends Canvas {
 		
 
 	// keep looping round til the game ends
-	while (gameRunning) {
+	while (!gameOver) {
 	    // work out how long its been since the last update, this
 	    // will be used to calculate how far the entities should
 	    // move this loop
@@ -242,72 +243,36 @@ public class Game extends Canvas {
 	    // surface and blank it out
 	    // was here
 	    Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
-	    g.setColor(Color.black);
-	    g.fillRect(0,0,800,600);
-			
-	    // cycle round asking each entity to move itself
-	    if (!waitingForKeyPress) {
-		for (int i=0;i<entities.size();i++) {
-		    Entity entity = (Entity) entities.get(i);
-		    entity.move(delta);
-		}
-	    }
-			
-	    // Calculate forces on all planets
-	    PlanetEntity.sumForces2d(planets);
-	    
-	    // Report on earth:
-	    //	    if (!waitingForKeyPress) System.err.println("Earth: "+entities.get(1).toString());
-
-	    // cycle round drawing all the entities we have in the game
-	    try {
-		for (int i=0;i<entities.size();i++) {
-		    Entity entity = (Entity)entities.get(i);
-		    entity.draw(g);
-		}
-	    } catch (Exception e) {
-		System.err.println("error: "+e.getMessage());
-		System.exit(1);
-	    }
-			
-	    // brute force collisions, compare every entity against
-	    // every other entity. If any of them collide notify 
-	    // both entities that the collision has occured
-	    for (int p=0;p<entities.size();p++) {
-		for (int s=p+1;s<entities.size();s++) {
-		    Entity me = (Entity) entities.get(p);
-		    Entity him = (Entity) entities.get(s);
-		    if (me.collidesWith(him)) {
-			me.collidedWith(him);
-			him.collidedWith(me);
-		    }
-		}
-	    }
-			
-	    // remove any entity that has been marked for clear up
-	    entities.removeAll(removeList);
-	    removeList.clear();
-
-	    // if a game event has indicated that game logic should
-	    // be resolved, cycle round every entity requesting that
-	    // their personal logic should be considered.
-	    if (logicRequiredThisLoop) {
-		for (int i=0;i<entities.size();i++) {
-		    Entity entity = (Entity) entities.get(i);
-		    entity.doLogic();
-		}
-				
-		logicRequiredThisLoop = false;
-	    }
 			
 	    // if we're waiting for an "any key" press then draw the 
 	    // current message 
 	    if (waitingForKeyPress) {
+		g.setColor(Color.black);
+		g.fillRect(0,0,800,600);
+
 		g.setColor(Color.white);
 		g.drawString(message,(800-g.getFontMetrics().stringWidth(message))/2,250);
 		g.drawString("Press any key",(800-g.getFontMetrics().stringWidth("Press any key"))/2,300);
 	    }
 			
+	    // cycle round asking each entity to move itself
+	    if (gameRunning) {
+		g.setColor(Color.black);
+		g.fillRect(0,0,800,600);
+
+		for (int i=0;i<entities.size();i++) {
+		    Entity entity = (Entity) entities.get(i);
+		    entity.move(delta);
+		}
+
+		PlanetEntity.sumForces2d(planets);
+
+		for (int i=0;i<entities.size();i++) {
+		    Entity entity = (Entity)entities.get(i);
+		    entity.draw(g);
+		}
+	    }
+
 	    // finally, we've completed drawing so clear up the graphics
 	    // and flip the buffer over
 	    g.dispose();
@@ -347,9 +312,12 @@ public class Game extends Canvas {
 	 * @param e The details of the key that was pressed 
 	 */
 	public void keyPressed(KeyEvent e) {
+	    System.err.println("KeyPressed event: "+e.toString());
 	    // if we're waiting for an "any key" typed then we don't 
 	    // want to do anything with just a "press"
 	    if (waitingForKeyPress) {
+		waitingForKeyPress=false;
+		System.err.println("any key pressed");
 		return;
 	    }
 			
@@ -373,7 +341,12 @@ public class Game extends Canvas {
 	public void keyReleased(KeyEvent e) {
 	    // if we're waiting for an "any key" typed then we don't 
 	    // want to do anything with just a "released"
+
+	    System.err.println("KeyReleased event: "+e.toString());
+
 	    if (waitingForKeyPress) {
+		waitingForKeyPress=false;
+		System.err.println("any key released");
 		return;
 	    }
 			
@@ -400,12 +373,16 @@ public class Game extends Canvas {
 	    // have had a keyType() event from the user releasing
 	    // the shoot or move keys, hence the use of the "pressCount"
 	    // counter.
+	    
+	    System.err.println("KeyTyped event: "+e.toString());
+	    
 	    if (waitingForKeyPress) {
 		if (pressCount == 1) {
 		    // since we've now recieved our key typed
 		    // event we can mark it as such and start 
 		    // our new game
-		    waitingForKeyPress = false;
+		    waitingForKeyPress=false;
+		    System.err.println("any key released");
 		    startGame();
 		    pressCount = 0;
 		} else {
@@ -413,10 +390,17 @@ public class Game extends Canvas {
 		}
 	    }
 			
-	    // if we hit escape, then quit the game
-	    if (e.getKeyChar() == 27) {
-		System.exit(0);
+	    switch (e.getKeyChar()) {
+	    case ' ': 
+		gameRunning=!gameRunning;
+		break;
+	    case 'q':
+	    case 'Q':
+	    case 27:		// escape (in theory)
+		gameOver=true;
+		break;
 	    }
+
 	}
     }
 	
@@ -434,5 +418,7 @@ public class Game extends Canvas {
 	// return until the game has finished running. Hence we are
 	// using the actual main thread to run the game.
 	game.gameLoop();
+	System.err.println("Game over");
+	System.exit(0);
     }
 }
