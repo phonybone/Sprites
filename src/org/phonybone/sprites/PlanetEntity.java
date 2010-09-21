@@ -134,11 +134,13 @@ public class PlanetEntity extends Entity {
     }
 
     // Return the velocity vector that corresponds to a stable orbit (gravity cancels centripital force)
-    public double[] stable_orbit(PlantetEntity p2) {
-	double r=sqrt(this.distance2d(p2));
-	double vm=sqrt(G*p2.mass/r);
+    public double[] stable_orbit(PlanetEntity p2) {
+	double r=Math.sqrt(this.distance2d(p2));
+	double vm=Math.sqrt(G*p2.mass/r);
 	double theta=this.angle2d(p2);
-	double[2] v=[vm*cos(theta),vm*sin(theta)];
+	double[] v=new double[2];
+	v[0]=vm*Math.cos(theta);
+	v[1]=vm*Math.sin(theta); 
 	return v;
     }
 
