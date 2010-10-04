@@ -102,6 +102,9 @@ public class Game extends Canvas {
 	// so we can respond to key pressed
 	addKeyListener(new KeyInputHandler());
 		
+	// Also mouse activity:
+	addMouseListener(new MouseInputHandler());
+
 	// request the focus so key events come to us
 	requestFocus();
 
@@ -404,6 +407,11 @@ public class Game extends Canvas {
 	}
     }
 	
+
+    private class MouseInputHandler {
+    }
+
+
     /**
      * The entry point into the game. We'll simply create an
      * instance of class which will start the display and game
