@@ -1,0 +1,11 @@
+Mapping:
+Want drag n drop for big maps
+- Requires better mouse events handler
+- Retain size of viewing window, size of screen; 
+- only copy active portion of background to playing field once per cycle; use semaphor types to control acces
+- better yet, always draw to next frame pending, draw active frame once; hopefully no lag issues....
+
+- Need java implementation of antpath
+
+- Need graphing class (possibly easier to roll own?  Seems stupid)
+ 
