@@ -126,22 +126,28 @@ public class PlanetEntity extends Entity {
     }
 
     public static ArrayList init_planets(Game game) {
+	PlanetEntity sun=  new PlanetEntity(game,"Sun",  400,300, 0, 0, 10000, Color.yellow);
+	PlanetEntity earth=new PlanetEntity(game,"Earth",500,300 ,0,15,    10, Color.blue);
+	earth.orbit(sun);
+	PlanetEntity moon= new PlanetEntity(game,"Moon" ,500,304 ,0,15,     2, Color.gray);
+	moon.orbit(earth);
+
 	ArrayList planets=new ArrayList();
-	planets.add(new PlanetEntity(game,"Sun",  400,300, 0, 0, 10000, Color.yellow));
-	planets.add(new PlanetEntity(game,"Earth",500,300 ,0,15,    10, Color.blue));
-	planets.add(new PlanetEntity(game,"Moon" ,500,304 ,0,15,     2, Color.gray));
+	planets.add(sun);
+	planets.add(earth);
+	planets.add(moon);
 	return planets;
     }
 
-    // Return the velocity vector that corresponds to a stable orbit (gravity cancels centripital force)
-    public double[] stable_orbit(PlanetEntity p2) {
+    // Set the velocity vector such that it corresponds to a stable orbit 
+    // around a second planet (gravity cancels centripital force)
+    public PlanetEntity orbit(PlanetEntity p2) {
 	double r=Math.sqrt(this.distance2d(p2));
 	double vm=Math.sqrt(G*p2.mass/r);
 	double theta=this.angle2d(p2);
-	double[] v=new double[2];
-	v[0]=vm*Math.cos(theta);
-	v[1]=vm*Math.sin(theta); 
-	return v;
+	this.dx=vm*Math.cos(theta);
+	this.dy=vm*Math.sin(theta); 
+	return this;
     }
 
     public int getWidth() {
