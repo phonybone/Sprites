@@ -103,6 +103,8 @@ public class Game extends Canvas {
 	// add a key input system (defined below) to our canvas
 	// so we can respond to key pressed
 	addKeyListener(new KeyInputHandler());
+		
+	// Also mouse activity:
 	addMouseListener(new MouseInputHandler());
 
 	// request the focus so key events come to us
