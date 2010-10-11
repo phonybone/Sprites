@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
@@ -101,7 +103,8 @@ public class Game extends Canvas {
 	// add a key input system (defined below) to our canvas
 	// so we can respond to key pressed
 	addKeyListener(new KeyInputHandler());
-		
+	addMouseListener(new MouseInputHandler());
+
 	// request the focus so key events come to us
 	requestFocus();
 
@@ -303,7 +306,7 @@ public class Game extends Canvas {
     private class KeyInputHandler extends KeyAdapter {
 	/** The number of key presses we've had while waiting for an "any key" press */
 	private int pressCount = 1;
-		
+	
 	/**
 	 * Notification from AWT that a key has been pressed. Note that
 	 * a key being pressed is equal to being pushed down but *NOT*
@@ -403,7 +406,18 @@ public class Game extends Canvas {
 
 	}
     }
-	
+
+    private class MouseInputHandler extends MouseAdapter {
+	public void mousePressed(MouseEvent e) {
+	}
+	public void mouseReleased(MouseEvent e) {
+	}
+	public void mouseEntered(MouseEvent e) {
+	}
+	public void mouseExited(MouseEvent e) {
+	}
+    }
+
     /**
      * The entry point into the game. We'll simply create an
      * instance of class which will start the display and game
