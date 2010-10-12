@@ -1,6 +1,7 @@
 package org.phonybone.sprites;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.lang.ArrayIndexOutOfBoundsException;
 
 public class IndexedSprite {
     private Image[] images;
@@ -28,7 +29,7 @@ public class IndexedSprite {
 	try {
 	    this.images[this.nImages]=image;
 	    this.nImages++;
-	} catch (ArrayIndexOutOfBoundsExceptions e) {
+	} catch (ArrayIndexOutOfBoundsException e) {
 	    yay=false;
 	}
 	return yay;
