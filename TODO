@@ -8,4 +8,6 @@ Want drag n drop for big maps
 - Need java implementation of antpath
 
 - Need graphing class (possibly easier to roll own?  Seems stupid)
+
+- Have to add API to game to handle key/mouse events (things like gameStarted, etc)
  
